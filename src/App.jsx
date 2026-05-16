@@ -156,7 +156,9 @@ export default function App() {
                     In een echt model hebben embeddings <strong>768 tot 4096 dimensies</strong>.
                     Woorden met verwante betekenis liggen dichter bij elkaar in deze
                     hoge-dimensionale ruimte. In deze demo gebruiken we vereenvoudigde
-                    3D-vectors als voorbeeld.
+                    3D-vectors als voorbeeld. Zie een embedding als een compacte
+                    samenvatting van wat een token vaak betekent en hoe het zich
+                    verhoudt tot andere tokens.
                   </p>
                 </MoreInfoPanel>
               </div>
@@ -253,7 +255,17 @@ export default function App() {
                     <strong>Key</strong> (wat bied ik aan?) en{' '}
                     <strong>Value</strong> (wat geef ik mee?).
                     De query van &eacute;&eacute;n token wordt vergeleken met de keys van alle andere tokens
-                    via een dot product. Softmax zet die scores om naar gewichten die samen 1.0 zijn.
+                    via een dot product. Softmax is een rekenstap die ruwe scores
+                    omzet naar een kansverdeling: alle uitkomsten worden positief
+                    en tellen samen op tot 1.0. Een hogere score krijgt daardoor
+                    relatief meer gewicht, maar lagere scores verdwijnen niet
+                    volledig.
+                  </p>
+                  <p>
+                    Intu&iuml;tief: zonder softmax zijn het losse getallen; m&eacute;t softmax
+                    krijg je een duidelijke verdeling van aandacht over de tokens.
+                    Die verdeling bepaalt vervolgens hoeveel informatie van elk
+                    token wordt meegenomen in de nieuwe representatie.
                   </p>
                 </MoreInfoPanel>
               </div>
@@ -341,6 +353,13 @@ export default function App() {
                     originele embedding terug toe, zodat informatie niet verloren gaat.
                     Dit heet ook wel &lsquo;skip connection&rsquo;.
                   </p>
+                  <p>
+                    Zo&rsquo;n feed-forward layer is een klein neuraal netwerk dat per token
+                    apart werkt. Een neuraal netwerk kun je zien als lagen met gewichten
+                    die patronen leren: de eerste laag combineert signalen, de
+                    activatiefunctie voegt niet-lineariteit toe, en de tweede laag
+                    projecteert terug naar het oorspronkelijke formaat.
+                  </p>
                 </MoreInfoPanel>
               </div>
             )}
@@ -366,6 +385,11 @@ export default function App() {
                     willekeurig de verdeling is: lage temperatuur &rarr; model kiest bijna altijd de
                     meest waarschijnlijke token; hoge temperatuur &rarr; verrassender output.
                     Top-k sampling kiest willekeurig uit de k meest waarschijnlijke tokens.
+                  </p>
+                  <p>
+                    Voorbeeld: als twee logits dicht bij elkaar liggen, geeft softmax
+                    twee vergelijkbare kansen. Ligt &eacute;&eacute;n logit veel hoger, dan wordt de
+                    verdeling piekerig en kiest het model meestal die token.
                   </p>
                 </MoreInfoPanel>
               </div>

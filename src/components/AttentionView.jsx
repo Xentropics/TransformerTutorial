@@ -12,21 +12,31 @@ function weightToColor(weight) {
 function ArrowView({ tokens, weights, selectedToken }) {
   const containerRef = useRef(null);
   const [positions, setPositions] = useState([]);
+  const [svgWidth, setSvgWidth] = useState(600);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const tokenEls = containerRef.current.querySelectorAll('.attn-token-block');
-    const rects = Array.from(tokenEls).map(el => {
-      const r = el.getBoundingClientRect();
-      const cr = containerRef.current.getBoundingClientRect();
-      return {
-        x: r.left - cr.left + r.width / 2,
-        y: r.top - cr.top + r.height / 2,
-        w: r.width,
-        h: r.height,
-      };
-    });
-    setPositions(rects);
+    if (!containerRef.current) return undefined;
+
+    const measure = () => {
+      if (!containerRef.current) return;
+      const tokenEls = containerRef.current.querySelectorAll('.attn-token-block');
+      const rects = Array.from(tokenEls).map(el => {
+        const r = el.getBoundingClientRect();
+        const cr = containerRef.current.getBoundingClientRect();
+        return {
+          x: r.left - cr.left + r.width / 2,
+          y: r.top - cr.top + r.height / 2,
+          w: r.width,
+          h: r.height,
+        };
+      });
+      setPositions(rects);
+      setSvgWidth(containerRef.current.clientWidth);
+    };
+
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
   }, [tokens, selectedToken]);
 
   const row = weights[selectedToken] || [];
@@ -49,8 +59,8 @@ function ArrowView({ tokens, weights, selectedToken }) {
         <svg
           className="arrow-svg"
           style={{ height: svgHeight, width: '100%' }}
-          viewBox={`0 0 ${positions[positions.length - 1]?.x + 30 || 600} ${svgHeight}`}
-          preserveAspectRatio="none"
+          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+          preserveAspectRatio="xMinYMin meet"
         >
           {row.map((weight, targetIdx) => {
             if (targetIdx === selectedToken || weight < 0.03) return null;
