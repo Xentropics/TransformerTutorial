@@ -15,7 +15,7 @@ function ArrowView({ tokens, weights, selectedToken }) {
   const [svgWidth, setSvgWidth] = useState(600);
 
   useEffect(() => {
-    if (!containerRef.current) return undefined;
+    if (!containerRef.current) return;
 
     const measure = () => {
       if (!containerRef.current) return;
