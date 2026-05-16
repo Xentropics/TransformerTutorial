@@ -1,16 +1,46 @@
-# React + Vite
+# Transformer Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Een interactieve, educatieve web-app die stap voor stap uitlegt hoe een transformer taalmodel werkt.
 
-Currently, two official plugins are available:
+> ⚠️ **Simulatie** — Conceptueel correct, getallen zijn vereenvoudigd.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Over dit project
 
-## React Compiler
+Dit is een statische browser-app (geen backend, geen echte model-inferentie) gebouwd met **React 18 + Vite**. De app visualiseert de interne werking van een transformer met gesimuleerde maar conceptueel correcte data.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+De UI is in het **Nederlands**. Drie voorbeeldzinnen zijn ingebouwd; je kunt ook je eigen zin invoeren.
 
-## Expanding the ESLint configuration
+## Stappen (8 lagen)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Invoer** — tekst invoeren of een voorbeeldzin kiezen
+2. **Tokenisatie** — zin opknippen in tokens met vocabulaire-ID's
+3. **Embeddings** — tokens omzetten naar numerieke vectoren
+4. **Positionale Encoding** — positie-informatie toevoegen aan embeddings
+5. **Self-Attention** — tokens kijken naar andere tokens (pijlen / heatmap)
+6. **Multi-Head Attention** — 3 attention heads met verschillende patronen
+7. **Feed-Forward Update** — vectoren verfijnen via feed-forward netwerk
+8. **Voorspelling** — kansen voor volgende token, met temperatuur-slider
+
+## Aan de slag
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in je browser.
+
+## Bouwen
+
+```bash
+npm run build
+```
+
+De geoptimaliseerde output staat in `dist/` (niet meegecommit).
+
+## Tech stack
+
+- React 18 + Vite
+- Plain CSS (geen Tailwind, geen CSS modules)
+- SVG voor attention-visualisaties
+- Geen externe dependencies buiten React/Vite
