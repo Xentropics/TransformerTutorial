@@ -33,6 +33,7 @@ export default function App() {
   const [sentenceData, setSentenceData] = useState(null);
   const [selectedToken, setSelectedToken] = useState(0);
   const [selectedHead, setSelectedHead] = useState(0);
+  const [selectedPrediction, setSelectedPrediction] = useState(0);
   const [showPositional, setShowPositional] = useState(false);
 
   function handleStart(text) {
@@ -40,6 +41,7 @@ export default function App() {
     setSentenceData(data);
     setSelectedToken(0);
     setSelectedHead(0);
+    setSelectedPrediction(0);
     setShowPositional(false);
     setCurrentStep(1);
   }
@@ -51,6 +53,7 @@ export default function App() {
     const data = generateCustomSentenceData(newText);
     setSentenceData(data);
     setSelectedToken(data.tokens.length - 1);
+    setSelectedPrediction(0);
     setCurrentStep(1);
   }
 
@@ -304,6 +307,10 @@ export default function App() {
                   selectedToken={selectedToken}
                   onSelectToken={setSelectedToken}
                 />
+                <p className="hint">
+                  Geselecteerd token: <strong>{data.tokens[selectedToken]?.text}</strong>.
+                  Klik op een token om te zien hoe het feed-forward netwerk dat token bijwerkt.
+                </p>
                 <div className="ff-comparison">
                   <div className="ff-col">
                     <h3>V&oacute;&oacute;r (na attention)</h3>
@@ -333,6 +340,30 @@ export default function App() {
                     ))}
                   </div>
                 </div>
+                <div className="ff-detail-card">
+                  <div className="ff-detail-header">
+                    <strong>{data.tokens[selectedToken]?.text}</strong>
+                    <span>Verandering per dimensie</span>
+                  </div>
+                  <div className="ff-detail-grid">
+                    <div className="vector-card compact highlighted">
+                      <div className="vector-card-header">V&oacute;&oacute;r</div>
+                      <VectorViewer vector={data.embeddings[selectedToken]} />
+                    </div>
+                    <div className="vector-card compact updated highlighted">
+                      <div className="vector-card-header">Na</div>
+                      <VectorViewer vector={data.updatedEmbeddings[selectedToken]} />
+                    </div>
+                    <div className="vector-card compact">
+                      <div className="vector-card-header">&Delta; Update</div>
+                      <VectorViewer
+                        vector={data.updatedEmbeddings[selectedToken].map(
+                          (value, index) => Math.round((value - data.embeddings[selectedToken][index]) * 100) / 100
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <MoreInfoPanel>
                   <p>
                     Een feed-forward layer bestaat uit twee lineaire transformaties met een
@@ -357,6 +388,8 @@ export default function App() {
                 </div>
                 <PredictionChart
                   predictions={data.predictions}
+                  selectedPrediction={selectedPrediction}
+                  onSelectPrediction={setSelectedPrediction}
                   onAppendToken={handleAppendToken}
                 />
                 <MoreInfoPanel>
