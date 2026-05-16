@@ -23,10 +23,6 @@ const LAYER_STACK = [
   { step: 7, label: 'Voorspelling' },
 ];
 
-function roundToTwoDecimals(value) {
-  return Math.round(value * 100) / 100;
-}
-
 function findSentenceData(text) {
   const found = sentences.find(s => s.text === text);
   return found || generateCustomSentenceData(text);
@@ -362,7 +358,10 @@ export default function App() {
                       <div className="vector-card-header">&Delta; Update</div>
                       <VectorViewer
                         vector={data.updatedEmbeddings[selectedToken].map(
-                          (value, index) => roundToTwoDecimals(value - data.embeddings[selectedToken][index])
+                          (value, index) => {
+                            const delta = value - data.embeddings[selectedToken][index];
+                            return Math.round(delta * 100) / 100;
+                          }
                         )}
                       />
                     </div>
