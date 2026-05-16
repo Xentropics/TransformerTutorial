@@ -10,7 +10,7 @@ import PredictionChart from './components/PredictionChart';
 import MoreInfoPanel from './components/MoreInfoPanel';
 import './App.css';
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 12;
 
 const LAYER_STACK = [
   { step: 0, label: 'Invoer' },
@@ -21,6 +21,10 @@ const LAYER_STACK = [
   { step: 5, label: 'Multi-Head' },
   { step: 6, label: 'Feed-Forward' },
   { step: 7, label: 'Voorspelling' },
+  { step: 8, label: 'Wat is een LLM?' },
+  { step: 9, label: 'Agents' },
+  { step: 10, label: 'Leren & RAG' },
+  { step: 11, label: 'Kritische blik' },
 ];
 
 function findSentenceData(text) {
@@ -81,8 +85,8 @@ export default function App() {
             <button
               key={layer.step}
               className={`layer-item ${currentStep === layer.step ? 'active' : ''} ${currentStep > layer.step ? 'done' : ''}`}
-              onClick={() => (layer.step === 0 || data) && goToStep(layer.step)}
-              disabled={layer.step > 0 && !data}
+              onClick={() => (layer.step === 0 || layer.step >= 8 || data) && goToStep(layer.step)}
+              disabled={layer.step > 0 && layer.step < 8 && !data}
             >
               <span className="layer-dot">{currentStep > layer.step ? '✓' : layer.step + 1}</span>
               <span className="layer-label">{layer.label}</span>
@@ -250,22 +254,45 @@ export default function App() {
                 />
                 <MoreInfoPanel>
                   <p>
-                    Voor elk token worden drie vectoren berekend:{' '}
-                    <strong>Query</strong> (wat zoek ik?),{' '}
-                    <strong>Key</strong> (wat bied ik aan?) en{' '}
-                    <strong>Value</strong> (wat geef ik mee?).
-                    De query van &eacute;&eacute;n token wordt vergeleken met de keys van alle andere tokens
-                    via een dot product. Softmax is een rekenstap die ruwe scores
-                    omzet naar een kansverdeling: alle uitkomsten worden positief
-                    en tellen samen op tot 1.0. Een hogere score krijgt daardoor
-                    relatief meer gewicht, maar lagere scores verdwijnen niet
-                    volledig.
+                    <strong>Hoe werkt het precies?</strong><br />
+                    Stel je voor dat je in een klas zit en iemand vraagt: "Wat bedoel je met 'bank'?"
+                    Je kijkt om je heen naar de rest van de zin om het te begrijpen.
+                    Dat is precies wat self-attention doet.
                   </p>
                   <p>
-                    Intu&iuml;tief: zonder softmax zijn het losse getallen; m&eacute;t softmax
-                    krijg je een duidelijke verdeling van aandacht over de tokens.
-                    Die verdeling bepaalt vervolgens hoeveel informatie van elk
-                    token wordt meegenomen in de nieuwe representatie.
+                    Voor elk token maakt het model drie kleine lijstjes met getallen:
+                  </p>
+                  <ul>
+                    <li><strong>Query (vraag):</strong> "Waar moet ik op letten?" — dit token stuurt een vraag de wereld in.</li>
+                    <li><strong>Key (sleutel):</strong> "Dit ben ik." — elk ander token geeft aan wat het te bieden heeft.</li>
+                    <li><strong>Value (waarde):</strong> "Dit is mijn informatie." — de inhoud die doorgegeven wordt als iemand op jou let.</li>
+                  </ul>
+                  <p>
+                    <strong>Stap 1 — Scores berekenen:</strong><br />
+                    De query van token A wordt vergeleken met de key van elk ander token.
+                    Dat vergelijken doe je met een <em>dot product</em>: je vermenigvuldigt de getallen met elkaar en telt ze op.
+                    Hoe meer de query en key op elkaar lijken, hoe hoger de score.
+                    Denk aan een zoekbalk: als je zoekt op "hond" en een token heeft key "hond", matcht dat goed.
+                  </p>
+                  <p>
+                    <strong>Stap 2 — Softmax (verdeling maken):</strong><br />
+                    Die scores zijn nu losse getallen, zoals 3.2, 0.1, -1.5.
+                    Dat zegt nog niet hoeveel aandacht je eraan moet geven.
+                    Softmax zet die getallen om naar <em>percentages die samen 100% zijn</em>.
+                    Dus misschien wordt het: 80% op token A, 15% op token B, 5% op token C.
+                    Hogere scores krijgen meer gewicht — maar lage scores tellen nog steeds een beetje mee.
+                  </p>
+                  <p>
+                    <strong>Stap 3 — Informatie ophalen:</strong><br />
+                    Nu weet het model hoe zwaar elk token meetelt.
+                    Het pakt de <em>value</em> van elk token en mengt die samen, gewogen met die percentages.
+                    Het resultaat is een nieuwe vector: een mix van informatie uit de hele zin,
+                    aangepast aan de context van dit specifieke token.
+                  </p>
+                  <p>
+                    <strong>Voorbeeld:</strong> In "De bank staat bij het water" kijkt "bank" sterk naar "water".
+                    Daardoor schuift de betekenis van "bank" richting "oever" in plaats van "zitmeubel".
+                    Zonder attention zou het model dat onderscheid niet kunnen maken.
                   </p>
                 </MoreInfoPanel>
               </div>
@@ -390,6 +417,199 @@ export default function App() {
                     Voorbeeld: als twee logits dicht bij elkaar liggen, geeft softmax
                     twee vergelijkbare kansen. Ligt &eacute;&eacute;n logit veel hoger, dan wordt de
                     verdeling piekerig en kiest het model meestal die token.
+                  </p>
+                </MoreInfoPanel>
+              </div>
+            )}
+
+            {currentStep === 8 && (
+              <div className="step-card">
+                <h2 className="step-title">Wat is een Large Language Model?</h2>
+                <p className="step-description">
+                  Een transformer is de motor. Een LLM is wat je krijgt als je die motor traint op een gigantische hoeveelheid tekst.
+                </p>
+                <MoreInfoPanel>
+                  <p>
+                    <strong>Van transformer naar LLM</strong><br />
+                    Je hebt nu gezien hoe een transformer werkt: tokens, embeddings, attention, voorspelling.
+                    Een <em>Large Language Model</em> (LLM) is een transformer die is getraind op een enorme hoeveelheid tekst —
+                    denk aan miljarden pagina's van het internet, boeken, Wikipedia en code.
+                  </p>
+                  <p>
+                    <strong>Hoe leer je een model?</strong><br />
+                    Tijdens training krijgt het model steeds een stukje tekst te zien met het laatste woord weggelaten.
+                    Het model doet een voorspelling, vergelijkt die met het echte woord, en past zijn interne gewichten aan.
+                    Dit herhaalt zich biljoen keer. Na training "weet" het model heel veel over taal, feiten en redeneren —
+                    zonder dat iemand het iets expliciet heeft uitgelegd.
+                  </p>
+                  <p>
+                    <strong>Wat maakt LLMs speciaal?</strong><br />
+                    Normale software volgt strikte regels: als A dan B. Een LLM leert patronen.
+                    Daardoor kan het:
+                  </p>
+                  <ul>
+                    <li>Tekst samenvatten, vertalen, herschrijven</li>
+                    <li>Vragen beantwoorden op basis van context</li>
+                    <li>Code schrijven en uitleggen</li>
+                    <li>Redeneren over nieuwe situaties die het nooit heeft gezien</li>
+                  </ul>
+                  <p>
+                    <strong>Voorbeelden:</strong> GPT-4 (OpenAI), Claude (Anthropic), Gemini (Google), Llama (Meta).
+                    Ze werken allemaal op het transformer-principe dat je hier hebt gezien.
+                  </p>
+                  <p>
+                    <strong>Context window</strong><br />
+                    Een LLM kan maar een bepaalde hoeveelheid tekst tegelijk "zien" — dat heet het <em>context window</em>.
+                    Vroege modellen hadden ruimte voor ~1000 tokens. Moderne modellen halen 100.000 tot 1 miljoen tokens.
+                    Alles buiten dat venster is het model "vergeten".
+                  </p>
+                </MoreInfoPanel>
+              </div>
+            )}
+
+            {currentStep === 9 && (
+              <div className="step-card">
+                <h2 className="step-title">Hoe werken AI-agents?</h2>
+                <p className="step-description">
+                  Een agent is een LLM dat niet alleen praat, maar ook dingen <em>doet</em>.
+                </p>
+                <MoreInfoPanel>
+                  <p>
+                    <strong>Van chatbot naar agent</strong><br />
+                    Een gewone chatbot geeft antwoorden. Een agent kan ook acties uitvoeren:
+                    een zoekopdracht doen, een bestand openen, een API aanroepen, code uitvoeren.
+                    Het LLM is de hersenen; de tools zijn de handen.
+                  </p>
+                  <p>
+                    <strong>Hoe werkt dat in de praktijk?</strong><br />
+                    Een agent werkt in een lus:
+                  </p>
+                  <ol>
+                    <li><strong>Denk:</strong> het LLM analyseert de opdracht en bedenkt een plan.</li>
+                    <li><strong>Handel:</strong> het roept een tool aan (bijv. "zoek op internet naar X").</li>
+                    <li><strong>Observeer:</strong> het krijgt het resultaat terug.</li>
+                    <li><strong>Herhaal</strong> tot de taak klaar is.</li>
+                  </ol>
+                  <p>
+                    Dit patroon heet <em>ReAct</em> (Reasoning + Acting). Bekende voorbeelden:
+                    AutoGPT, GitHub Copilot, en de agents in ChatGPT die kunnen browsen of code uitvoeren.
+                  </p>
+                  <p>
+                    <strong>Multi-agent systemen</strong><br />
+                    Je kunt ook meerdere agents samenwerken laten: één agent plant, een andere zoekt informatie,
+                    een derde schrijft de uiteindelijke tekst. Ze communiceren via tekst, net als mensen via e-mail.
+                  </p>
+                  <p>
+                    <strong>Gevaar:</strong> een agent die zelfstandig handelt kan fouten maken die moeilijk terug te draaien zijn.
+                    Daarom bouwen ontwikkelaars <em>guardrails</em> in: limieten op wat een agent mag doen zonder menselijke goedkeuring.
+                  </p>
+                </MoreInfoPanel>
+              </div>
+            )}
+
+            {currentStep === 10 && (
+              <div className="step-card">
+                <h2 className="step-title">Modellen leren & aanpassen</h2>
+                <p className="step-description">
+                  Een standaard LLM is generiek. Maar je kunt het bijspijkeren voor jouw situatie — op meerdere manieren.
+                </p>
+                <MoreInfoPanel>
+                  <p>
+                    <strong>1. Prompting</strong><br />
+                    De eenvoudigste aanpassing: geef het model goede instructies in je prompt.
+                    "Beantwoord als een vriendelijke klantenservice-medewerker" verandert al hoe het model reageert.
+                    Je kunt ook voorbeelden meegeven (<em>few-shot prompting</em>): "Hier zijn drie voorbeeldantwoorden, doe het zo."
+                  </p>
+                  <p>
+                    <strong>2. Fine-tuning</strong><br />
+                    Hier train je het model verder op jouw eigen data.
+                    Stel je hebt 10.000 klantenservice-gesprekken van je bedrijf.
+                    Door het model hierop bij te trainen, leert het de toon, terminologie en aanpak van jouw organisatie.
+                    De interne gewichten veranderen écht — het model wordt letterlijk anders.
+                  </p>
+                  <p>
+                    <strong>3. RLHF (Reinforcement Learning from Human Feedback)</strong><br />
+                    Zo is ChatGPT nuttig en beleefd geworden. Mensen beoordelen antwoorden ("dit is goed, dit is slecht"),
+                    en het model leert die voorkeur na te streven. Zonder RLHF zou een LLM soms gevaarlijke of onzinnige antwoorden geven.
+                  </p>
+                  <p>
+                    <strong>4. RAG — Retrieval-Augmented Generation</strong><br />
+                    Een LLM weet niets over wat er gisteren is gebeurd, of over jouw interne documenten.
+                    RAG lost dat op: voordat het model antwoord geeft, zoekt een apart systeem relevante documenten op
+                    (bijv. jouw kennisbank), en stopt die in de prompt. Het model combineert dan zijn eigen kennis met die verse informatie.
+                  </p>
+                  <p>
+                    <strong>Voorbeeld RAG:</strong> Je vraagt "Wat zijn onze openingstijden?" De RAG-laag zoekt in de bedrijfsdocumenten,
+                    vindt de juiste pagina, en geeft die mee aan het LLM. Het LLM formuleert dan een helder antwoord.
+                    Zonder RAG zou het model dit simpelweg niet weten.
+                  </p>
+                  <p>
+                    <strong>Wanneer gebruik je wat?</strong>
+                  </p>
+                  <ul>
+                    <li><em>Prompting</em> — snel, goedkoop, geen technische kennis nodig</li>
+                    <li><em>RAG</em> — als je up-to-date of bedrijfsspecifieke informatie nodig hebt</li>
+                    <li><em>Fine-tuning</em> — als je een specifieke stijl of vakkennis wilt inbakken</li>
+                    <li><em>RLHF</em> — voor grote organisaties die een model grondig willen sturen</li>
+                  </ul>
+                </MoreInfoPanel>
+              </div>
+            )}
+
+            {currentStep === 11 && (
+              <div className="step-card">
+                <h2 className="step-title">Kritische blik: wat gaat er mis?</h2>
+                <p className="step-description">
+                  AI is krachtig — maar niet neutraal, niet gratis en niet foutloos. Een technology assessment.
+                </p>
+                <MoreInfoPanel>
+                  <p>
+                    <strong>🧠 Hallucinaties</strong><br />
+                    Een LLM voorspelt woorden op basis van patronen. Het "weet" niet echt of iets waar is.
+                    Soms verzint het feiten die klinken als echt: een nepbron, een fout cijfer, een niet-bestaand persoon.
+                    Dit heet een <em>hallucinatie</em>. Het is geen opzet — het model heeft simpelweg geen ingebouwde waarheidscheck.
+                    Blindelings vertrouwen is dus gevaarlijk.
+                  </p>
+                  <p>
+                    <strong>⚖️ Alignment</strong><br />
+                    Hoe zorg je dat een AI doet wat je <em>bedoelt</em>, niet alleen wat je letterlijk zegt?
+                    Dit is het alignment-probleem. Een model geoptimaliseerd op "mensen blij maken" kan leren te liegen
+                    als dat hogere beoordelingen geeft. Alignment-onderzoek probeert dit te voorkomen —
+                    maar het is een open probleem waar de beste AI-onderzoekers ter wereld aan werken.
+                  </p>
+                  <p>
+                    <strong>🌍 Energieverbruik en CO₂</strong><br />
+                    Het trainen van een groot model kost evenveel stroom als honderden huishoudens een jaar lang gebruiken.
+                    En elke keer dat je een vraag stelt, draait er een datacenter. De totale uitstoot van de AI-industrie
+                    groeit snel. Sommige bedrijven compenseren dit met groene energie; anderen niet.
+                  </p>
+                  <p>
+                    <strong>💧 Waterverbruik</strong><br />
+                    Datacenters gebruiken water om te koelen. Microsoft en Google verbruiken inmiddels miljoenen liters
+                    drinkwater per dag voor hun AI-infrastructuur — ook in gebieden waar water schaars is.
+                  </p>
+                  <p>
+                    <strong>👷 Arbeidsomstandigheden bij training</strong><br />
+                    Om een model veilig te maken, moeten mensen schadelijke content beoordelen en labelen.
+                    Dit werk — vaak gedaan in landen als Kenia of de Filipijnen — is psychisch zwaar en slecht betaald.
+                    Onderzoeksjournalisten hebben misstanden blootgelegd bij toeleveranciers van grote AI-bedrijven.
+                  </p>
+                  <p>
+                    <strong>©️ Auteursrecht en trainingsdata</strong><br />
+                    LLMs zijn getraind op teksten, boeken, afbeeldingen en code van mensen — vaak zonder toestemming of vergoeding.
+                    Schrijvers, kunstenaars en programmeurs klagen dat hun werk is gebruikt zonder dat ze iets terugzien.
+                    In meerdere landen lopen rechtszaken. Hoe dit juridisch eindigt, is nog onduidelijk.
+                  </p>
+                  <p>
+                    <strong>🔒 Privacy en bias</strong><br />
+                    Trainingsdata bevat ook persoonlijke informatie en maatschappelijke vooroordelen.
+                    Modellen kunnen bestaande ongelijkheid versterken — bijvoorbeeld door vrouwen minder snel voor te stellen
+                    als ingenieur. Bovendien kunnen gebruikers onbewust gevoelige informatie delen met commerciële AI-diensten.
+                  </p>
+                  <p>
+                    <strong>Wat kun jij doen?</strong><br />
+                    Kritisch blijven. Bronnen checken. Nadenken over welke AI-diensten je gebruikt en van wie.
+                    En beseffen: technologie is nooit neutraal — er zitten altijd keuzes en belangen achter.
                   </p>
                 </MoreInfoPanel>
               </div>
