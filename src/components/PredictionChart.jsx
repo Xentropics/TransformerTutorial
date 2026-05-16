@@ -14,7 +14,7 @@ function applySoftmaxWithTemperature(predictions, temperature) {
 export default function PredictionChart({
   predictions,
   selectedPrediction = 0,
-  onSelectPrediction,
+  onSelectPrediction = () => {},
   onAppendToken,
 }) {
   const [temperature, setTemperature] = useState(1.0);
@@ -50,7 +50,7 @@ export default function PredictionChart({
           <div
             key={i}
             className={`prediction-row ${selectedPrediction === i ? 'selected' : ''}`}
-            onClick={() => onSelectPrediction?.(i)}
+            onClick={() => onSelectPrediction(i)}
             title={`Klik om '${pred.token}' te bekijken`}
           >
             <span className="pred-token">{pred.token}</span>
