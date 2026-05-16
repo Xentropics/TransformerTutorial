@@ -39,7 +39,7 @@ const LLM_CAPABILITIES = [
     icon: '🌍',
     label: 'Vertalen',
     summary: 'Vertaal tekst naar honderden talen met behoud van toon en nuance.',
-    example: '"The bank is by the river." → "De oever ligt aan de rivier."',
+    example: '"Ik houd van appeltaart." → "I love apple pie."',
   },
   {
     icon: '💻',
@@ -140,7 +140,7 @@ const RISKS = [
   },
   {
     icon: '👷',
-    label: 'Werkomstandig-heden',
+    label: 'Werkomstandig\u00adheden',
     summary: 'Content labelen voor AI-veiligheid is psychisch zwaar en slecht betaald.',
     detail: 'Vaak gedaan in Kenia, de Filipijnen of andere lage-lonenlanden. Misstanden zijn blootgelegd bij toeleveranciers van grote AI-bedrijven.',
   },
