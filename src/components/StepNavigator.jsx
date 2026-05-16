@@ -7,6 +7,10 @@ const STEP_NAMES = [
   'Multi-Head Attention',
   'Feed-Forward Update',
   'Voorspelling',
+  'Wat is een LLM?',
+  'AI-agents',
+  'Modellen aanpassen',
+  'Kritische blik',
 ];
 
 export default function StepNavigator({ currentStep, totalSteps, onPrev, onNext }) {

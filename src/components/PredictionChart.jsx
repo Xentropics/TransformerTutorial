@@ -11,11 +11,19 @@ function applySoftmaxWithTemperature(predictions, temperature) {
   }));
 }
 
-export default function PredictionChart({ predictions, onAppendToken }) {
+export default function PredictionChart({
+  predictions,
+  selectedPrediction = 0,
+  onSelectPrediction = () => {},
+  onAppendToken,
+}) {
   const [temperature, setTemperature] = useState(1.0);
 
   const adjusted = applySoftmaxWithTemperature(predictions, temperature);
-  const maxProb = Math.max(...adjusted.map(p => p.probability));
+  const maxProb = Math.max(...adjusted.map(p => p.probability), 0);
+  const activePrediction = adjusted.length > 0
+    ? adjusted[selectedPrediction] ?? adjusted[0]
+    : null;
 
   return (
     <div className="prediction-chart">
@@ -41,22 +49,44 @@ export default function PredictionChart({ predictions, onAppendToken }) {
         {adjusted.map((pred, i) => (
           <div
             key={i}
-            className="prediction-row"
-            onClick={() => onAppendToken(pred.token)}
-            title={`Klik om '${pred.token}' toe te voegen`}
+            className={`prediction-row ${selectedPrediction === i ? 'selected' : ''}`}
+            onClick={() => onSelectPrediction(i)}
+            title={`Klik om '${pred.token}' te bekijken`}
           >
             <span className="pred-token">{pred.token}</span>
             <div className="pred-bar-container">
               <div
                 className="pred-bar"
-                style={{ width: `${(pred.probability / maxProb) * 100}%` }}
+                style={{ width: `${(pred.probability / (maxProb || 1)) * 100}%` }}
               />
             </div>
             <span className="pred-pct">{(pred.probability * 100).toFixed(1)}%</span>
           </div>
         ))}
       </div>
-      <p className="pred-hint">Klik op een token om het toe te voegen aan de zin.</p>
+      {activePrediction && (
+        <div className="prediction-detail-card">
+          <div>
+            <div className="prediction-detail-title">
+              Gekozen token: <strong>{activePrediction.token}</strong>
+            </div>
+            <div className="prediction-detail-meta">
+              Kans bij temperatuur {temperature.toFixed(1)}:{' '}
+              <strong>{(activePrediction.probability * 100).toFixed(1)}%</strong>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="append-token-btn"
+            onClick={() => onAppendToken(activePrediction.token)}
+          >
+            Voeg token toe
+          </button>
+        </div>
+      )}
+      <p className="pred-hint">
+        Klik op een token om het te selecteren en voeg het daarna toe aan de zin.
+      </p>
     </div>
   );
 }

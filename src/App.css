@@ -819,6 +819,203 @@
   margin-top: 0.5rem;
 }
 
+/* ===== Prediction Interactive ===== */
+.prediction-row.selected {
+  background: var(--blue-light);
+  box-shadow: inset 0 0 0 1.5px var(--blue);
+}
+
+.prediction-detail-card,
+.ff-detail-card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+}
+
+.prediction-detail-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.prediction-detail-title {
+  font-size: 0.9rem;
+  color: var(--gray-900);
+}
+
+.prediction-detail-meta {
+  font-size: 0.8rem;
+  color: var(--gray-600);
+  margin-top: 0.2rem;
+}
+
+.append-token-btn {
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--blue);
+  color: white;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.append-token-btn:hover {
+  background: var(--blue-dark);
+}
+
+/* ===== Feed-Forward Detail Card ===== */
+.ff-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.ff-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.82rem;
+  color: var(--gray-600);
+}
+
+.ff-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+/* ===== Info Cards (steps 8–11) ===== */
+.info-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 0.6rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: white;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  font-size: 0.84rem;
+  color: var(--gray-700);
+}
+
+.info-card:hover {
+  background: var(--gray-100);
+  border-color: var(--blue);
+}
+
+.info-card.active {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue-dark);
+  font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+
+.info-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.info-card-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.info-detail {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-left: 3px solid var(--blue);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--gray-700);
+  margin-bottom: 0.75rem;
+}
+
+.info-detail strong {
+  color: var(--gray-900);
+}
+
+.info-detail-example {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--gray-600);
+  font-style: italic;
+}
+
+/* ===== ReAct Loop (step 9) ===== */
+.react-loop {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.react-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: white;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  min-width: 80px;
+  flex: 1;
+}
+
+.react-step:hover {
+  background: var(--gray-100);
+  border-color: var(--blue);
+}
+
+.react-step.active {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  font-weight: 600;
+  color: var(--blue-dark);
+}
+
+.react-step-icon {
+  font-size: 1.4rem;
+}
+
+.react-step-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.react-arrow {
+  font-size: 1.2rem;
+  color: var(--gray-600);
+  padding-top: 0.9rem;
+  flex-shrink: 0;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 700px) {
   .app-body {
