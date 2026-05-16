@@ -20,8 +20,10 @@ export default function PredictionChart({
   const [temperature, setTemperature] = useState(1.0);
 
   const adjusted = applySoftmaxWithTemperature(predictions, temperature);
-  const maxProb = Math.max(...adjusted.map(p => p.probability));
-  const activePrediction = adjusted[selectedPrediction] ?? adjusted[0];
+  const maxProb = Math.max(...adjusted.map(p => p.probability), 0);
+  const activePrediction = adjusted.length > 0
+    ? adjusted[selectedPrediction] ?? adjusted[0]
+    : null;
 
   return (
     <div className="prediction-chart">
@@ -55,7 +57,7 @@ export default function PredictionChart({
             <div className="pred-bar-container">
               <div
                 className="pred-bar"
-                style={{ width: `${(pred.probability / maxProb) * 100}%` }}
+                style={{ width: `${(pred.probability / (maxProb || 1)) * 100}%` }}
               />
             </div>
             <span className="pred-pct">{(pred.probability * 100).toFixed(1)}%</span>
