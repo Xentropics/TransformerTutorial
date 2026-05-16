@@ -11,6 +11,7 @@ import MoreInfoPanel from './components/MoreInfoPanel';
 import './App.css';
 
 const TOTAL_STEPS = 8;
+const DELTA_PRECISION = 100;
 
 const LAYER_STACK = [
   { step: 0, label: 'Invoer' },
@@ -359,9 +360,8 @@ export default function App() {
                       <VectorViewer
                         vector={data.updatedEmbeddings[selectedToken].map(
                           (value, index) => {
-                            const deltaPrecision = 100;
                             const delta = value - data.embeddings[selectedToken][index];
-                            return Math.round(delta * deltaPrecision) / deltaPrecision;
+                            return Math.round(delta * DELTA_PRECISION) / DELTA_PRECISION;
                           }
                         )}
                       />
