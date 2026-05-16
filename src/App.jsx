@@ -308,7 +308,7 @@ export default function App() {
                   onSelectToken={setSelectedToken}
                 />
                 <p className="hint">
-                  Geselecteerd token: <strong>{data.tokens[selectedToken]?.text}</strong>.
+                  Geselecteerd token: <strong>{data.tokens[selectedToken]?.text}</strong>.{' '}
                   Klik op een token om te zien hoe het feed-forward netwerk dat token bijwerkt.
                 </p>
                 <div className="ff-comparison">
@@ -359,8 +359,9 @@ export default function App() {
                       <VectorViewer
                         vector={data.updatedEmbeddings[selectedToken].map(
                           (value, index) => {
+                            const deltaPrecision = 100;
                             const delta = value - data.embeddings[selectedToken][index];
-                            return Math.round(delta * 100) / 100;
+                            return Math.round(delta * deltaPrecision) / deltaPrecision;
                           }
                         )}
                       />
