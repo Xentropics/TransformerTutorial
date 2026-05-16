@@ -45,7 +45,9 @@ export default function App() {
   }
 
   function handleAppendToken(token) {
-    const newText = sentenceData.text.replace(/[.!?]+$/, '') + ' ' + token + '.';
+    // Preserve the original ending punctuation if present, otherwise append a period
+    const trailingPunct = sentenceData.text.match(/[.!?]+$/)?.[0] ?? '.';
+    const newText = sentenceData.text.replace(/[.!?]+$/, '') + ' ' + token + trailingPunct;
     const data = generateCustomSentenceData(newText);
     setSentenceData(data);
     setSelectedToken(data.tokens.length - 1);

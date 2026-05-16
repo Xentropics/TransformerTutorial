@@ -291,7 +291,8 @@ function generateAttentionRow(tokenCount, focusIdx) {
 }
 
 export function generateCustomSentenceData(text) {
-  const wordParts = text.split(/(\s+|(?<=[^\s])[.,!?;:])/u).filter(Boolean);
+  // Split on whitespace OR on punctuation characters, keeping punctuation as separate tokens
+  const wordParts = text.split(/([.,!?;:])|\s+/).filter(Boolean);
   const rawTokens = [];
   for (const part of wordParts) {
     const trimmed = part.trim();
