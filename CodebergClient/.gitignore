@@ -1,0 +1,15 @@
+# Xcode / iOS
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+CodebergClient.xcodeproj/xcuserdata/
+CodebergClient.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
